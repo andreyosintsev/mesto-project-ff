@@ -48,4 +48,4 @@ module.exports = {                              // module.exports — это с�
         new CleanWebpackPlugin(),               // использовали плагин
         new MiniCssExtractPlugin()              // подключение плагина для объединения файлов
     ]                                           
-}
+};
