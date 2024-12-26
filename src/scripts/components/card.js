@@ -70,7 +70,7 @@ function deleteCard(cardElement) {
     }
 
     cardElement.remove();
-};
+}
 
 //@todo: функция лайка карточки
 function likeCard(cardElement) {
@@ -81,7 +81,7 @@ function likeCard(cardElement) {
 
     const heart = cardElement.querySelector('.card__like-button');
     heart.classList.toggle('card__like-button_is-active');
-};
+}
 
 function showCard(cardElement) {
     if (!cardElement) {
@@ -95,11 +95,11 @@ function showCard(cardElement) {
     popupImage.src = cardImage.src;
     popupImage.alt = cardImage.alt;
     openModal(popup);
-};
+}
 
 export {
     createCard,
     deleteCard,
     likeCard,
     showCard
-}
+};

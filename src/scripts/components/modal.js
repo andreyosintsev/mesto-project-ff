@@ -1,25 +1,42 @@
 import { popups } from '../elements.js';
+import { clearValidation } from '../validation.js';
 
 function openModal(popupElement) {
     if (!popupElement) {
+        console.warn('Не передан элемент попапа');
         return;
     }
 
+    const formElement = popupElement.querySelector('.popup__form');
+    if (formElement) {
+      console.log(formElement);
+      clearValidation(formElement, {
+        formSelector: '.popup__form',
+        inputSelector: '.popup__input',
+        submitButtonSelector: '.popup__button',
+        inactiveButtonClass: 'popup__button_inactive',
+        inputErrorClass: 'popup__input_type_error',
+        errorClass: 'popup__error_visible'
+      });
+    }
+    
     popupElement.classList.add('popup_is-opened');
 
-    const popupCloseButton = popupElement.querySelector('.popup__close');
-    
+    const popupCloseButton = popupElement.querySelector('.popup__close');    
     
     popupCloseButton.addEventListener('click', () => closeModal(popupElement));
-    document.addEventListener('keydown', closeModalByEsc)
+    document.addEventListener('keydown', closeModalByEsc);
 }
 
-function closeModal(popupElement) {
+function closeModal(popupElement) {  
     if (!popupElement) {
+        console.warn('Не передан элемент попапа');
         return;
     }
     
     popupElement.classList.remove('popup_is-opened');
+    const formElement = popupElement.querySelector('.popup__form');
+    formElement.reset();
     
     const popupCloseButton = popupElement.querySelector('.popup__close');
     
@@ -33,4 +50,4 @@ function closeModalByEsc(e) {
     }
 }
 
-export { openModal, closeModal }
+export { openModal, closeModal };

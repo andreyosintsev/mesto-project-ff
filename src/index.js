@@ -23,13 +23,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function buttonClickHandler(e) {
         if (e.target.classList.contains('profile__add-button')) {
-            openModal(popupNew);
-        }
-        if (e.target.classList.contains('profile__edit-button')) {
             const profileTitle = document.querySelector('.profile__title');
             const profileDescription = document.querySelector('.profile__description');
             document.forms['edit-profile'].elements.name.value = profileTitle.textContent;
             document.forms['edit-profile'].elements.description.value = profileDescription.textContent;
+            openModal(popupNew);
+        }
+        if (e.target.classList.contains('profile__edit-button')) {
+            document.forms['new-place'].elements['place-name'].value = '';
+            document.forms['new-place'].elements['link'].value = '';
             openModal(popupEdit);
         }
     }
@@ -90,5 +92,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    enableValidation();
+    enableValidation({
+      formSelector: '.popup__form',
+      inputSelector: '.popup__input',
+      submitButtonSelector: '.popup__button',
+      inactiveButtonClass: 'popup__button_inactive',
+      inputErrorClass: 'popup__input_type_error',
+      errorClass: 'popup__error_visible'
+    });
 });
