@@ -36,7 +36,9 @@ function closeModal(popupElement) {
     
     popupElement.classList.remove('popup_is-opened');
     const formElement = popupElement.querySelector('.popup__form');
-    formElement.reset();
+    if (formElement) {
+      formElement.reset();
+    }
     
     const popupCloseButton = popupElement.querySelector('.popup__close');
     

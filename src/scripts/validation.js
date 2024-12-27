@@ -59,7 +59,6 @@ function hideInputError(formElement, inputElement, validationConfig) {
 
 function setEventListeners(formElement, validationConfig) {
   const inputList = Array.from(formElement.querySelectorAll(validationConfig.inputSelector));
-  console.log(inputList);
   const buttonElement = formElement.querySelector(validationConfig.submitButtonSelector);
   toggleButtonState(inputList, buttonElement, validationConfig);
 

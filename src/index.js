@@ -1,7 +1,7 @@
-import { initialCards } from './scripts/cards.js';
 import { createCard, deleteCard, likeCard, showCard } from './scripts/components/card.js';
 import { openModal, closeModal } from './scripts/components/modal.js';
 import { enableValidation } from './scripts/validation.js';
+import { getInitialCards, getUserInfo, editUserInfo, addNewCard } from './scripts/api.js';
 
 import {
     cardsContainer,
@@ -15,6 +15,7 @@ import {
 import './pages/index.css';
 
 document.addEventListener('DOMContentLoaded', () => {
+    let userInfo = [];
     
     // функция вставки карточки на страницу
     function renderCard(card, cardsContainer, method) {
@@ -23,27 +24,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function buttonClickHandler(e) {
         if (e.target.classList.contains('profile__add-button')) {
-            const profileTitle = document.querySelector('.profile__title');
-            const profileDescription = document.querySelector('.profile__description');
-            document.forms['edit-profile'].elements.name.value = profileTitle.textContent;
-            document.forms['edit-profile'].elements.description.value = profileDescription.textContent;
-            openModal(popupNew);
+
+          document.forms['new-place'].elements['place-name'].value = '';
+          document.forms['new-place'].elements['link'].value = '';
+
+          openModal(popupNew);
         }
         if (e.target.classList.contains('profile__edit-button')) {
-            document.forms['new-place'].elements['place-name'].value = '';
-            document.forms['new-place'].elements['link'].value = '';
-            openModal(popupEdit);
+          
+          document.forms['edit-profile'].elements.name.value = userInfo.name;
+          document.forms['edit-profile'].elements.description.value = userInfo.about;
+
+          openModal(popupEdit);
         }
     }
 
     function handleEditFormSubmit(e) {
         e.preventDefault();
         const name = editNameInput.value;
-        const job = editJobInput.value;
-        const profileTitle = document.querySelector('.profile__title');
-        const profileDescription = document.querySelector('.profile__description');
-        profileTitle.textContent = name;
-        profileDescription.textContent = job;        
+        const description = editJobInput.value;
+
+        editUserInfo(name, description)
+        .then(data => {
+          userInfo = JSON.parse(JSON.stringify(data));
+          setUserInfo(userInfo);
+        });
 
         closeModal(popupEdit);
     }
@@ -53,23 +58,60 @@ document.addEventListener('DOMContentLoaded', () => {
         const name = newPlaceNameInput.value;
         const link = newPlaceUrlInput.value;
 
-        const newCard = createCard({
-            name,
-            link
-        }, deleteCard, likeCard, showCard);
+        addNewCard(name, link)
+        .then(card => {
+          const newCard = createCard({
+            name: card.name,
+            link: card.link
+          }, deleteCard, likeCard, showCard);
+          renderCard(newCard, cardsContainer, 'prepend');
+        });
 
-        renderCard(newCard, cardsContainer, 'prepend');
         formNewPlace.reset(); 
-
+        
         closeModal(popupNew);
     }
 
-    // Вывести карточки на страницу, используем цикл forEach
-    initialCards.forEach(initialCard => {
+    function setUserInfo(userInfo) {
+      // "name": "Jacques Cousteau",
+      // "about": "Sailor, researcher",
+      // "avatar": "https://pictures.s3.yandex.net/frontend-developer/ava.jpg",
+      // "_id": "e20537ed11237f86bbb20ccb",
+      // "cohort": "cohort0"
+
+      const profileImageElement = document.querySelector('.profile__image');
+      const profileTitleElement = document.querySelector('.profile__title');
+      const profileDescriptionElement = document.querySelector('.profile__description');
+
+      profileImageElement.style.backgroundImage = `url(${userInfo.avatar})`;
+      profileTitleElement.textContent = userInfo.name;
+      profileDescriptionElement.textContent = userInfo.about; 
+    }
+
+    Promise.all([getInitialCards(), getUserInfo()])
+    .then(data => {
+      data[0].forEach(initialCard => {
         const card = createCard(initialCard, deleteCard, likeCard, showCard);
         renderCard(card, cardsContainer, 'append');
+      });
+      userInfo = JSON.parse(JSON.stringify(data[1]));
+      setUserInfo(userInfo);
     });
-    
+
+    // getInitialCards()
+    // .then(initialCards => {
+    //   // Вывести карточки на страницу, используем цикл forEach
+    //   console.log(initialCards);
+    //   initialCards.forEach(initialCard => {
+    //     const card = createCard(initialCard, deleteCard, likeCard, showCard);
+    //     renderCard(card, cardsContainer, 'append');
+    //   });
+    // });
+
+    // getUserInfo()
+    // .then(userInfo => {
+    //   setUserInfo(userInfo);
+    // });
 
     buttonAdd.addEventListener('click', buttonClickHandler);
     buttonEdit.addEventListener('click', buttonClickHandler);
