@@ -21,7 +21,7 @@ const getInitialCards = () => {
         headers: config.headers
       })
       .then(checkResponse)
-      .then(data => { return data; })
+      .then(data => data)
       .catch(error => { throw new Error(error); });
     } catch(error) {
       console.error(`Ошибка в getInitialCards: ${error}`);
@@ -35,7 +35,7 @@ const getUserInfo = () => {
       headers: config.headers
     })
     .then(checkResponse)
-    .then(data => { return data; })
+    .then(data => data)
     .catch(error => { throw new Error(error); });
   } catch(error) {
     console.error(`Ошибка в getUserInfo: ${error}`);
@@ -53,7 +53,7 @@ const editUserInfo = (name, about) => {
       })
     })
     .then(checkResponse)
-    .then(data => { return data; })
+    .then(data => data)
     .catch(error => { throw new Error(error); });
   } catch(error) {
     console.error(`Ошибка в editUserInfo: ${error}`);
@@ -71,10 +71,52 @@ const addNewCard = (name, link) => {
       })
     })
     .then(checkResponse)
-    .then(data => { return data; })
+    .then(data => data)
     .catch(error => { throw new Error(error); });
   } catch(error) {
-    console.error(`Ошибка в getInitialCards: ${error}`);
+    console.error(`Ошибка в addNewCard: ${error}`);
+  }
+};
+
+const deleteExistingCard = (cardId) => {
+  try {
+    return fetch(`${config.baseUrl}/cards/${cardId}`, {
+      method: 'DELETE',
+      headers: config.headers,
+    })
+    .then(checkResponse)
+    .then(data => data)
+    .catch(error => { throw new Error(error); });
+  } catch(error) {
+    console.error(`Ошибка в deleteCard: ${error}`);
+  }
+};
+
+const setLike = (cardId) => {
+  try {
+    return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
+      method: 'PUT',
+      headers: config.headers
+    })
+    .then(checkResponse)
+    .then(data => data)
+    .catch(error => { throw new Error(error); });
+  } catch(error) {
+    console.error(`Ошибка в setLike: ${error}`);
+  }
+};
+
+const unsetLike = (cardId) => {
+  try {
+    return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
+      method: 'DELETE',
+      headers: config.headers
+    })
+    .then(checkResponse)
+    .then(data => data)
+    .catch(error => { throw new Error(error); });
+  } catch(error) {
+    console.error(`Ошибка в unsetLike: ${error}`);
   }
 };
 
@@ -82,5 +124,8 @@ export {
   getInitialCards,
   getUserInfo,
   editUserInfo,
-  addNewCard
+  addNewCard,
+  deleteExistingCard,
+  setLike,
+  unsetLike
 };

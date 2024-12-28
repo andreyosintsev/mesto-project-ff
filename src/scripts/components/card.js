@@ -1,10 +1,11 @@
 import { cardTemplate } from "../elements";
 import { openModal } from "./modal";
 import { popupImage } from "../elements";
+import { deleteExistingCard } from "../api";
 
 //Функция создания карточки
 
-function createCard(cardData, cardDeleteHandler, cardLikeHandler, cardShowHandler) {
+function createCard(cardData, userInfo, cardDeleteHandler, cardLikeHandler, cardShowHandler) {
     if (!cardData) {
         console.error('Не переданы данные для карточки');
         return;
@@ -21,15 +22,18 @@ function createCard(cardData, cardDeleteHandler, cardLikeHandler, cardShowHandle
     const cardImage = newCardElement.querySelector('.card__image');
     const cardDeleteButton = newCardElement.querySelector('.card__delete-button');
     const cardTitle = newCardElement.querySelector('.card__title');
+    const cardLikes = newCardElement.querySelector('.card__like-counter');
 
-    if (!(cardImage || cardDeleteButton || cardTitle)) {
+    if (!(cardImage || cardDeleteButton || cardTitle || cardLikes)) {
         console.error('Не удалось найти элементы шаблона карточки'); 
         return;
     }
 
+    newCardElement.dataset.id = cardData._id;
     cardImage.src = cardData.link ? cardData.link : '';
     cardImage.alt = cardData.name ? cardData.name : '';
     cardTitle.textContent = cardData.name ? cardData.name : 'Не найдено';
+    cardLikes.textContent = cardData.likes.length;
 
     if (!cardDeleteHandler) {
         console.error('Хэндлер удаления карточки не передан');
@@ -44,8 +48,10 @@ function createCard(cardData, cardDeleteHandler, cardLikeHandler, cardShowHandle
     }
 
     const buttonDelete = newCardElement.querySelector('.card__delete-button');
-    if (buttonDelete) {
+    if (buttonDelete && cardData.owner._id == userInfo._id  ) {
         buttonDelete.addEventListener('click', () => deleteCard(newCardElement));
+    } else {
+        buttonDelete.style.display = 'none';
     }
 
     const buttonLike = newCardElement.querySelector('.card__like-button');
@@ -69,7 +75,8 @@ function deleteCard(cardElement) {
         return;
     }
 
-    cardElement.remove();
+    deleteExistingCard(cardElement.dataset.id)
+    .then(() => cardElement.remove());    
 }
 
 //@todo: функция лайка карточки

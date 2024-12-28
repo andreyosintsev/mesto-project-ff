@@ -60,10 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         addNewCard(name, link)
         .then(card => {
-          const newCard = createCard({
-            name: card.name,
-            link: card.link
-          }, deleteCard, likeCard, showCard);
+          const newCard = createCard(card, userInfo, deleteCard, likeCard, showCard);
           renderCard(newCard, cardsContainer, 'prepend');
         });
 
@@ -89,12 +86,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     Promise.all([getInitialCards(), getUserInfo()])
-    .then(data => {
-      data[0].forEach(initialCard => {
-        const card = createCard(initialCard, deleteCard, likeCard, showCard);
+    .then(([initialCards, user]) => {
+      userInfo = user;
+      initialCards.forEach(initialCard => {
+        const card = createCard(initialCard, userInfo, deleteCard, likeCard, showCard);
         renderCard(card, cardsContainer, 'append');
       });
-      userInfo = JSON.parse(JSON.stringify(data[1]));
+
       setUserInfo(userInfo);
     });
 
