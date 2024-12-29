@@ -96,21 +96,6 @@ document.addEventListener('DOMContentLoaded', () => {
       setUserInfo(userInfo);
     });
 
-    // getInitialCards()
-    // .then(initialCards => {
-    //   // Вывести карточки на страницу, используем цикл forEach
-    //   console.log(initialCards);
-    //   initialCards.forEach(initialCard => {
-    //     const card = createCard(initialCard, deleteCard, likeCard, showCard);
-    //     renderCard(card, cardsContainer, 'append');
-    //   });
-    // });
-
-    // getUserInfo()
-    // .then(userInfo => {
-    //   setUserInfo(userInfo);
-    // });
-
     buttonAdd.addEventListener('click', buttonClickHandler);
     buttonEdit.addEventListener('click', buttonClickHandler);
 
